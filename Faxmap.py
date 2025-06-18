@@ -343,7 +343,7 @@ ax.set_extent(i_area, proj)
 cnf_ept = ax.contourf(dsp['lon'], dsp['lat'], dsp['Equivalent_Potential_temperature'][np.where(levels == 850)[0][0],:,:], np.arange(270, 360, 3), cmap="jet", extend='both', transform=latlon_proj)
 
 # EPT等値線 実線
-#cn_ept0 = ax.contour(dsp['lon'], dsp['lat'], dsp['Equivalent_Potential_temperature'][np.where(levels == 850)[0][0],:,:], colors='black', linewidths=0.3, levels=np.arange(270, 390, 3), transform=latlon_proj)
+cn_ept0 = ax.contour(dsp['lon'], dsp['lat'], dsp['Equivalent_Potential_temperature'][np.where(levels == 850)[0][0],:,:], colors='black', linewidths=0.3, levels=np.arange(270, 390, 3), transform=latlon_proj)
 #ax.clabel(cn_ept0, fontsize=8, inline=True, inline_spacing=5, fmt='%i', rightside_up=True, colors='black')
 cn_ept1 = ax.contour(dsp['lon'], dsp['lat'], dsp['Equivalent_Potential_temperature'][np.where(levels == 850)[0][0],:,:], colors='black', linewidths=1.0, levels=np.arange(270, 390, 15), transform=latlon_proj)
 ax.clabel(cn_ept1, fontsize=12, inline=True, inline_spacing=5, fmt='%i', rightside_up=True, colors='black')
@@ -404,9 +404,10 @@ for tagHp in [300,400,500,700,850,925]:
     ax.set_extent(i_area, latlon_proj)
  
     # 等高度線
-    dataHgt = dsp['Geopotential_height'][np.where(levels == tagHp)[0][0],:,:]
-    cn_hgt = ax.contour(dsp['lon'], dsp['lat'], dsp['Geopotential_height'][np.where(levels == tagHp)[0][0],:,:], colors='black', linewidths=1.5, levels=np.arange(0, 12000, 60), transform=latlon_proj)
-    ax.clabel(cn_hgt, fontsize=18, inline=True, colors='black', inline_spacing=5, fmt='%i', rightside_up=True)
+    cn_hgt1 = ax.contour(dsp['lon'], dsp['lat'], dsp['Geopotential_height'][np.where(levels == tagHp)[0][0],:,:], colors='black', linewidths=1.5, levels=np.arange(0, 12000, 60), transform=latlon_proj)
+    ax.clabel(cn_hgt1, fontsize=18, inline=True, colors='black', inline_spacing=5, fmt='%i', rightside_up=True)
+    cn_hgt2= ax.contour(dsp['lon'], dsp['lat'], dsp['Geopotential_height'][np.where(levels == tagHp)[0][0],:,:], colors='black', linewidths=1.5, levels=np.arange(0, 12000, 300), transform=latlon_proj)
+    ax.clabel(cn_hgt2, fontsize=15, inline=True, colors='black', inline_spacing=0, fmt='%i', rightside_up=True)
  
     # ハッチ preTTd hPa面 T - Td
     ax.contourf(dsp['lon'], dsp['lat'], dsp['ttd'][np.where(levels == tagHp)[0][0],:,:], [3, 18], colors=['green','1.0','yellow'], extend='both', transform=latlon_proj ,alpha=0.5)
@@ -414,8 +415,8 @@ for tagHp in [300,400,500,700,850,925]:
     # preT hPa面 等温度線
     cn_tmp0 = ax.contour(dsp['lon'], dsp['lat'], dsp['temperature'][np.where(levels == tagHp)[0][0],:,:], colors='red', linewidths=1.0, linestyles='solid', levels=np.arange(-60, 42, 3), transform=latlon_proj)
     ax.clabel(cn_tmp0, fontsize=8, inline=True, inline_spacing=5, fmt='%i', rightside_up=True, colors='red')
-    #cn_tmp1 = ax.contour(dsp['lon'], dsp['lat'], dsp['temperature'][np.where(levels == tagHp)[0][0],:,:], colors='red', linewidths=2.0, linestyles='solid', levels=np.arange(-60, 42, 15), transform=latlon_proj)
-    #ax.clabel(cn_tmp1, fontsize=12, inline=True, inline_spacing=5, fmt='%i', rightside_up=True, colors='red')
+    cn_tmp1 = ax.contour(dsp['lon'], dsp['lat'], dsp['temperature'][np.where(levels == tagHp)[0][0],:,:], colors='red', linewidths=2.0, linestyles='solid', levels=np.arange(-60, 42, 15), transform=latlon_proj)
+    ax.clabel(cn_tmp1, fontsize=12, inline=True, inline_spacing=5, fmt='%i', rightside_up=True, colors='red')
  
     if tagHp == 300:
         ax.contourf(dsp['lon'], dsp['lat'], dsp['wind_speed'][np.where(levels == tagHp)[0][0],:,:].values, [80,100,120], colors=['white','cyan','pink','magenta'], extend='both', transform=latlon_proj, alpha=0.5)
@@ -514,10 +515,9 @@ for tagHp in [300,400,500,700,850,925]:
  
     ## 出力
     out_fn="{0}_{1:03d}ttd.png".format(dt_str,tagHp)
-    out_path = os.path.join(fig_fld, out_fn)
+    out_path = os.path.join(out_fn)
     plt.savefig(out_path)
     print("output:{}".format(out_fn))
- 
+
     ## 表示
     plt.show()
- 
