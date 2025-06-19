@@ -336,7 +336,6 @@ dlon,dlat=10,10   # 10度ごとに
  
 ## 図法指定                                                                            
 proj = ccrs.PlateCarree()
-latlon_proj = ccrs.PlateCarree()
 ## 図のSIZE指定inch                                                                        
 fig3 = plt.figure(figsize=(10,8))
 ## 余白設定                                                                                
@@ -346,12 +345,12 @@ ax = fig3.add_subplot(1, 1, 1, projection=proj)
 ax.set_extent(i_area, proj)
  
 # EPT塗りつぶし
-cnf_ept = ax.contourf(dsp['lon'], dsp['lat'], dsp['Equivalent_Potential_temperature'][np.where(levels == 850)[0][0],:,:], np.arange(270, 360, 3), cmap="jet", extend='both', transform=latlon_proj)
+cnf_ept = ax.contourf(dsp['lon'], dsp['lat'], dsp['Equivalent_Potential_temperature'][np.where(levels == 850)[0][0],:,:], np.arange(270, 360, 3), cmap="jet", extend='both', transform=proj)
 
 # EPT等値線 実線
-cn_ept0 = ax.contour(dsp['lon'], dsp['lat'], dsp['Equivalent_Potential_temperature'][np.where(levels == 850)[0][0],:,:], colors='black', linewidths=0.3, levels=np.arange(270, 390, 3), transform=latlon_proj)
+cn_ept0 = ax.contour(dsp['lon'], dsp['lat'], dsp['Equivalent_Potential_temperature'][np.where(levels == 850)[0][0],:,:], colors='black', linewidths=0.3, levels=np.arange(270, 390, 3), transform=proj)
 #ax.clabel(cn_ept0, fontsize=8, inline=True, inline_spacing=5, fmt='%i', rightside_up=True, colors='black')
-cn_ept1 = ax.contour(dsp['lon'], dsp['lat'], dsp['Equivalent_Potential_temperature'][np.where(levels == 850)[0][0],:,:], colors='black', linewidths=1.0, levels=np.arange(270, 390, 15), transform=latlon_proj)
+cn_ept1 = ax.contour(dsp['lon'], dsp['lat'], dsp['Equivalent_Potential_temperature'][np.where(levels == 850)[0][0],:,:], colors='black', linewidths=1.0, levels=np.arange(270, 390, 15), transform=proj)
 ax.clabel(cn_ept1, fontsize=12, inline=True, inline_spacing=5, fmt='%i', rightside_up=True, colors='black')
  
 ## 海岸線
@@ -366,7 +365,7 @@ gl.ylocator = mticker.FixedLocator(yticks)
  
 ## 風                                                  
 wind_slice = (slice(None, None, 8), slice(None, None, 8))
-ax.barbs(dsp['lon'][wind_slice[0]], dsp['lat'][wind_slice[1]], dsp['u_wind'][np.where(levels == 850)[0][0],wind_slice[0],wind_slice[1]].values, dsp['v_wind'][np.where(levels == 850)[0][0],wind_slice[0],wind_slice[1]].values, length=5.5, pivot='middle', color='black', transform=latlon_proj)
+ax.barbs(dsp['lon'][wind_slice[0]], dsp['lat'][wind_slice[1]], dsp['u_wind'][np.where(levels == 850)[0][0],wind_slice[0],wind_slice[1]].values, dsp['v_wind'][np.where(levels == 850)[0][0],wind_slice[0],wind_slice[1]].values, length=5.5, pivot='middle', color='black', transform=proj)
    
 ## 図の説明
 fig3.text(0.5, 0.01, dt_str + " 850hPa EPT(K), Wind" ,ha='center',va='bottom', size=20)
@@ -384,7 +383,6 @@ plt.show()
 
 ## 図法指定                                                                            
 proj = ccrs.PlateCarree()
-latlon_proj = ccrs.PlateCarree()
 ## 図のSIZE指定inch                                                                        
 fig3 = plt.figure(figsize=(10,8))
 ## 余白設定                                                                                
@@ -395,7 +393,7 @@ ax.set_extent(i_area, proj)
  
 # 地上気圧
 clevs_mslp = np.arange(800, 1200, 4)
-ax.contour(dsp['lon'], dsp['lat'], dsp['mslp'], clevs_mslp, colors='black', linestyles='solid', linewidths=[1.25, 0.75, 0.75, 0.75, 0.75], transform=crs_data)
+ax.contour(dsp['lon'], dsp['lat'], dsp['mslp'], clevs_mslp, colors='black', linestyles='solid', linewidths=[1.25, 0.75, 0.75, 0.75, 0.75], transform=proj)
  
 h_y, h_x = find_peaks(dsp['mslp'] * 0.01)
 l_y, l_x = find_peaks(dsp['mslp'] * 0.01, maxima=False)
@@ -404,15 +402,15 @@ for x, y in zip(h_x, h_y):
     lon_pt = dsp['lon'][y, x]
     lat_pt = dsp['lat'][y, x]
     val = dsp['mslp'][y, x]
-    scattertext(ax01, [lon_pt], [lat_pt], 'H', size=10, color='blue', fontweight='bold', transform=crs_data)
-    scattertext(ax01, [lon_pt], [lat_pt], [val], formatter='.0f', size=8, color='blue', loc=(0, -15), transform=crs_data)
+    scattertext(ax01, [lon_pt], [lat_pt], 'H', size=10, color='blue', fontweight='bold', transform=proj)
+    scattertext(ax01, [lon_pt], [lat_pt], [val], formatter='.0f', size=8, color='blue', loc=(0, -15), transform=proj)
  
 for x, y in zip(l_x, l_y):
     lon_pt = dsp['lon'][y, x]
     lat_pt = dsp['lat'][y, x]
     val = dsp['mslp'][y, x]
-    scattertext(ax01, [lon_pt], [lat_pt], 'L', size=10, color='red', fontweight='bold', transform=crs_data)
-    scattertext(ax01, [lon_pt], [lat_pt], [val], formatter='.0f', size=8, color='red', loc=(0, -15), transform=crs_data)
+    scattertext(ax01, [lon_pt], [lat_pt], 'L', size=10, color='red', fontweight='bold', transform=proj)
+    scattertext(ax01, [lon_pt], [lat_pt], [val], formatter='.0f', size=8, color='red', loc=(0, -15), transform=proj)
  
 ## 海岸線
 ax.coastlines(resolution='50m', linewidth=1.6) # 海岸線の解像度を上げる  
@@ -465,29 +463,29 @@ for tagHp in [300,400,500,700,850,925]:
        
     ## 余白  FAX図に合わせる
     ax = fig.add_subplot(1, 1, 1, projection=proj)
-    ax.set_extent(i_area, latlon_proj)
+    ax.set_extent(i_area, proj)
  
     # 等高度線
-    cn_hgt1 = ax.contour(dsp['lon'], dsp['lat'], dsp['Geopotential_height'][np.where(levels == tagHp)[0][0],:,:], colors='black', linewidths=1.5, levels=np.arange(0, 12000, 60), transform=latlon_proj)
+    cn_hgt1 = ax.contour(dsp['lon'], dsp['lat'], dsp['Geopotential_height'][np.where(levels == tagHp)[0][0],:,:], colors='black', linewidths=1.5, levels=np.arange(0, 12000, 60), transform=proj)
     ax.clabel(cn_hgt1, fontsize=18, inline=True, colors='black', inline_spacing=5, fmt='%i', rightside_up=True)
-    cn_hgt2= ax.contour(dsp['lon'], dsp['lat'], dsp['Geopotential_height'][np.where(levels == tagHp)[0][0],:,:], colors='black', linewidths=1.5, levels=np.arange(0, 12000, 300), transform=latlon_proj)
+    cn_hgt2= ax.contour(dsp['lon'], dsp['lat'], dsp['Geopotential_height'][np.where(levels == tagHp)[0][0],:,:], colors='black', linewidths=1.5, levels=np.arange(0, 12000, 300), transform=proj)
     ax.clabel(cn_hgt2, fontsize=15, inline=True, colors='black', inline_spacing=0, fmt='%i', rightside_up=True)
  
     # ハッチ preTTd hPa面 T - Td
-    ax.contourf(dsp['lon'], dsp['lat'], dsp['ttd'][np.where(levels == tagHp)[0][0],:,:], [3, 18], colors=['green','1.0','yellow'], extend='both', transform=latlon_proj ,alpha=0.5)
+    ax.contourf(dsp['lon'], dsp['lat'], dsp['ttd'][np.where(levels == tagHp)[0][0],:,:], [3, 18], colors=['green','1.0','yellow'], extend='both', transform=proj ,alpha=0.5)
  
     # preT hPa面 等温度線
-    cn_tmp0 = ax.contour(dsp['lon'], dsp['lat'], dsp['temperature'][np.where(levels == tagHp)[0][0],:,:], colors='red', linewidths=1.0, linestyles='solid', levels=np.arange(-60, 42, 3), transform=latlon_proj)
+    cn_tmp0 = ax.contour(dsp['lon'], dsp['lat'], dsp['temperature'][np.where(levels == tagHp)[0][0],:,:], colors='red', linewidths=1.0, linestyles='solid', levels=np.arange(-60, 42, 3), transform=proj)
     ax.clabel(cn_tmp0, fontsize=8, inline=True, inline_spacing=5, fmt='%i', rightside_up=True, colors='red')
-    cn_tmp1 = ax.contour(dsp['lon'], dsp['lat'], dsp['temperature'][np.where(levels == tagHp)[0][0],:,:], colors='red', linewidths=2.0, linestyles='solid', levels=np.arange(-60, 42, 15), transform=latlon_proj)
+    cn_tmp1 = ax.contour(dsp['lon'], dsp['lat'], dsp['temperature'][np.where(levels == tagHp)[0][0],:,:], colors='red', linewidths=2.0, linestyles='solid', levels=np.arange(-60, 42, 15), transform=proj)
     ax.clabel(cn_tmp1, fontsize=12, inline=True, inline_spacing=5, fmt='%i', rightside_up=True, colors='red')
  
     if tagHp == 300:
-        ax.contourf(dsp['lon'], dsp['lat'], dsp['wind_speed'][np.where(levels == tagHp)[0][0],:,:].values, [80,100,120], colors=['1.0','cyan','pink','magenta'], extend='max', transform=latlon_proj, alpha=0.5)
+        ax.contourf(dsp['lon'], dsp['lat'], dsp['wind_speed'][np.where(levels == tagHp)[0][0],:,:].values, [80,100,120], colors=['1.0','cyan','pink','magenta'], extend='max', transform=proj, alpha=0.5)
     elif tagHp == 500:
-        ax.contourf(dsp['lon'], dsp['lat'], dsp['vorticity'][np.where(levels == tagHp)[0][0],:,:] * 1000000, np.arange(0, 200, 10), cmap="Oranges", extend='max', transform=latlon_proj, alpha=0.5)
+        ax.contourf(dsp['lon'], dsp['lat'], dsp['vorticity'][np.where(levels == tagHp)[0][0],:,:] * 1000000, np.arange(0, 200, 10), cmap="Oranges", extend='max', transform=proj, alpha=0.5)
     elif tagHp == 700:
-        ax.contourf(dsp['lon'], dsp['lat'], dsp['omega'][np.where(levels == tagHp)[0][0],:,:], np.arange(0, 20, 1), cmap="Reds", extend='max', transform=latlon_proj, alpha=0.5)
+        ax.contourf(dsp['lon'], dsp['lat'], dsp['omega'][np.where(levels == tagHp)[0][0],:,:], np.arange(0, 20, 1), cmap="Reds", extend='max', transform=proj, alpha=0.5)
    
     # + stamp
     maxid = detect_peaks(dsp['omega'][np.where(levels == tagHp)[0][0],:,:].values, filter_size=3, dist_cut=4.0)
@@ -500,7 +498,7 @@ for tagHp in [300,400,500,700,850,925]:
         val = dsp['omega'][i,np.where(levels == tagHp)[0][0],:,:].values[maxid[0][j]][maxid[1][j]]
         ival = int(val)
         if ival > 30:
-          ax.plot(wlon, wlat, marker='+' , markersize=8, color="purple", transform=latlon_proj)
+          ax.plot(wlon, wlat, marker='+' , markersize=8, color="purple", transform=proj)
         if ival > 30:
           ax.text(fig_z[0], fig_z[1] - 0.008, str(ival), size=12, color="purple", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
  
@@ -515,7 +513,7 @@ for tagHp in [300,400,500,700,850,925]:
         val = dsp['omega'][i,np.where(levels == tagHp)[0][0],:,:].values[minid[0][j]][minid[1][j]]
         ival = int(val * -1.0)
         if ival > 30:
-            ax.plot(wlon, wlat, marker='_' , markersize=8, color="red",transform=latlon_proj)
+            ax.plot(wlon, wlat, marker='_' , markersize=8, color="red",transform=proj)
         if ival > 30:
             ax.text(fig_z[0], fig_z[1] - 0.008, str(ival), size=12, color="red", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
  
@@ -527,7 +525,7 @@ for tagHp in [300,400,500,700,850,925]:
         # 図の範囲内に座標があるか確認
         fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
         if ( fig_z[0] > 0.0 and fig_z[0] < 1.0  and fig_z[1] > 0.0 and fig_z[1] < 1.0):
-            ax.text(wlon, wlat, 'W', size=12, color="red", ha='center', va='center', transform=latlon_proj)
+            ax.text(wlon, wlat, 'W', size=12, color="red", ha='center', va='center', transform=proj)
  
     ## C スタンプ
     minid = detect_peaks(dsp['temperature'][np.where(levels == tagHp)[0][0],:,:].values, filter_size=12, dist_cut=2.0, flag=1)
@@ -537,7 +535,7 @@ for tagHp in [300,400,500,700,850,925]:
         # 図の範囲内に座標があるか確認
         fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
         if ( fig_z[0] > 0.0 and fig_z[0] < 1.0  and fig_z[1] > 0.0 and fig_z[1] < 1.0):
-            ax.text(wlon, wlat, 'C', size=12, color="blue", ha='center', va='center', transform=latlon_proj)
+            ax.text(wlon, wlat, 'C', size=12, color="blue", ha='center', va='center', transform=proj)
  
     # H stamp                                                                                                
     maxid = detect_peaks(dsp['Geopotential_height'][np.where(levels == tagHp)[0][0],:,:].values, filter_size=10, dist_cut=8.0)
@@ -547,7 +545,7 @@ for tagHp in [300,400,500,700,850,925]:
         # 図の範囲内に座標があるか確認                                                                          
         fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
         if ( fig_z[0] > 0.0 and fig_z[0] < 1.0  and fig_z[1] > 0.0 and fig_z[1] < 1.0):
-            ax.text(wlon, wlat, 'H', size=24, color="blue", ha='center', va='center', transform=latlon_proj)
+            ax.text(wlon, wlat, 'H', size=24, color="blue", ha='center', va='center', transform=proj)
  
     # L stamp                                                                                                
     minid = detect_peaks(dsp['Geopotential_height'][np.where(levels == tagHp)[0][0],:,:].values, filter_size=10, dist_cut=8.0, flag=1)
@@ -557,7 +555,7 @@ for tagHp in [300,400,500,700,850,925]:
         # 図の範囲内に座標があるか確認                                                                          
         fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
         if ( fig_z[0] > 0.0 and fig_z[0] < 1.0  and fig_z[1] > 0.0 and fig_z[1] < 1.0):
-            ax.text(wlon, wlat, 'L', size=24, color="red", ha='center', va='center', transform=latlon_proj)
+            ax.text(wlon, wlat, 'L', size=24, color="red", ha='center', va='center', transform=proj)
  
     ## 海岸線など
     ax.coastlines(resolution='50m',) # 海岸線の解像度を上げる
