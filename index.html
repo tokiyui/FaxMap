@@ -78,7 +78,7 @@
   const grid = document.getElementById("imageGrid");
   suffixes.forEach(suffix => {
     const img = document.createElement("img");
-    img.src = `./Data/${latestTime}/${latestTime}${suffix}`;
+    img.src = `./Data/${latestTime}UTC/${latestTime}UTC${suffix}`;
     img.alt = latestTime + suffix;
     grid.appendChild(img);
   });
