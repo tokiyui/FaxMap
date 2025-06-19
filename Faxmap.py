@@ -413,7 +413,7 @@ for j in range(len(maxid[0])):
 
 # 気圧 L
 minid = detect_peaks(dsp['mslp'].values, filter_size=30, dist_cut=8.0,flag=1)
-    for j in range(len(minid[0])):
+for j in range(len(minid[0])):
     wlon = dsp['lon'][minid[1][j]]
     wlat = dsp['lat'][minid[0][j]]
     # 図の範囲内に座標があるか確認                                                        
