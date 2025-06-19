@@ -242,6 +242,7 @@ for l in range(l_size):
     aryWv[l] = valWv
     aryRh[l] = valRh
     aryOmg[l] = valOmg
+    arySlp = valSlp
  
 # ### Xarry データセットに変換
 # GPVをmetpyを利用して物理量を計算するには、numpyの配列データからXarrayのデータセットを作成する
