@@ -395,22 +395,22 @@ ax.set_extent(i_area, proj)
  
 # 地上気圧
 clevs_mslp = np.arange(800, 1200, 4)
-ax.contour(lon, lat, dsp['mslp'], clevs_mslp, colors='black', linestyles='solid', linewidths=[1.25, 0.75, 0.75, 0.75, 0.75], transform=crs_data)
+ax.contour(dsp['lon'], dsp['lat'], dsp['mslp'], clevs_mslp, colors='black', linestyles='solid', linewidths=[1.25, 0.75, 0.75, 0.75, 0.75], transform=crs_data)
  
 h_y, h_x = find_peaks(dsp['mslp'] * 0.01)
 l_y, l_x = find_peaks(dsp['mslp'] * 0.01, maxima=False)
 
 for x, y in zip(h_x, h_y):
-    lon_pt = lon[y, x]
-    lat_pt = lat[y, x]
-    val = mslp[y, x]
+    lon_pt = dsp['lon'][y, x]
+    lat_pt = dsp['lat'][y, x]
+    val = dsp['mslp'][y, x]
     scattertext(ax01, [lon_pt], [lat_pt], 'H', size=10, color='blue', fontweight='bold', transform=crs_data)
     scattertext(ax01, [lon_pt], [lat_pt], [val], formatter='.0f', size=8, color='blue', loc=(0, -15), transform=crs_data)
  
 for x, y in zip(l_x, l_y):
-    lon_pt = lon[y, x]
-    lat_pt = lat[y, x]
-    val = mslp[y, x]
+    lon_pt = dsp['lon'][y, x]
+    lat_pt = dsp['lat'][y, x]
+    val = dsp['mslp'][y, x]
     scattertext(ax01, [lon_pt], [lat_pt], 'L', size=10, color='red', fontweight='bold', transform=crs_data)
     scattertext(ax01, [lon_pt], [lat_pt], [val], formatter='.0f', size=8, color='red', loc=(0, -15), transform=crs_data)
  
