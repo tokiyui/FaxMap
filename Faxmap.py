@@ -141,12 +141,12 @@ def fetch_wyoming_data(wmo, dt, tagHp):
 now_utc = datetime.datetime.utcnow()
  
 # 8時間引く
-adjusted_time = now_utc - datetime.timedelta(hours=8)
+adjusted_time = now_utc - datetime.timedelta(hours=12) - datetime.timedelta(minutes=90)
  
 # 6時間単位で切り捨て
 truncated_hour = (adjusted_time.hour // 12) * 12
 dt = adjusted_time.replace(hour=truncated_hour, minute=0, second=0, microsecond=0)
-vt = dt +  datetime.timedelta(hours=12)
+vt = dt + datetime.timedelta(hours=12)
  
 # 個別に取り出したい場合
 i_year = dt.year
@@ -211,7 +211,7 @@ aryRh = np.zeros([l_size, lat_size, lon_size])
 aryWu = np.zeros([l_size, lat_size, lon_size])
 aryWv = np.zeros([l_size, lat_size, lon_size])
 aryOmg = np.zeros([l_size, lat_size, lon_size])
-    
+
 # 要素別に読み込み
 grbs = pygrib.open(fname_gfs)
 grbHt = sorted(grbs.select(shortName="gh", typeOfLevel='isobaricInhPa', level=lambda l: l >= 300), key=lambda g: g.level, reverse=False)
@@ -220,7 +220,11 @@ grbWu = sorted(grbs.select(shortName="u", typeOfLevel='isobaricInhPa', level=lam
 grbWv = sorted(grbs.select(shortName="v", typeOfLevel='isobaricInhPa', level=lambda l: l >= 300), key=lambda g: g.level, reverse=False)
 grbRh = sorted(grbs.select(shortName="r", typeOfLevel='isobaricInhPa', level=lambda l: l >= 300), key=lambda g: g.level, reverse=False)
 grbOmg = sorted(grbs.select(shortName="w", typeOfLevel='isobaricInhPa', level=lambda l: l >= 300), key=lambda g: g.level, reverse=False)
- 
+
+# 気圧
+arySlp = np.zeros([lat_size, lon_size]) 
+valSlp, _, _ = grbs.select(name='Mean sea level pressure')[0].data(lat1=lat_min, lat2=lat_max, lon1=lon_min, lon2=lon_max)
+
 # 要素毎に3次元配列作成
 for l in range(l_size):
     valHt, _, _ = grbHt[l].data(lat1=latS,lat2=latN,lon1=lonW,lon2=lonE)
@@ -229,7 +233,7 @@ for l in range(l_size):
     valWv, _, _ = grbWv[l].data(lat1=latS,lat2=latN,lon1=lonW,lon2=lonE)
     valRh, _, _ = grbRh[l].data(lat1=latS,lat2=latN,lon1=lonW,lon2=lonE)
     valOmg, _, _ = grbOmg[l].data(lat1=latS,lat2=latN,lon1=lonW,lon2=lonE)
- 
+
     ## 4次元配列に代入
     aryHt[l] = valHt
     aryTm[l] = valTm
@@ -244,12 +248,13 @@ for l in range(l_size):
 # Xarray data set作成
 ds = xr.Dataset(
     {
-        "Geopotential_height": (["level","lat", "lon"], aryHt * units.meter),
-        "temperature": (["level","lat", "lon"], aryTm * units('K')),
-        "relative_humidity": (["level","lat", "lon"], aryRh * units('%')),
-        "u_wind": (["level","lat", "lon"], aryWu * units('m/s')),
-        "v_wind": (["level","lat", "lon"], aryWv * units('m/s')),
-        "omega": (["level","lat", "lon"], aryOmg / 100 * 3600 * units('Pa/s')), # Pa/s => hPa/h
+        "Geopotential_height": (["level", "lat", "lon"], aryHt * units.meter),
+        "temperature": (["level", "lat", "lon"], aryTm * units('K')),
+        "relative_humidity": (["level", "lat", "lon"], aryRh * units('%')),
+        "u_wind": (["level", "lat", "lon"], aryWu * units('m/s')),
+        "v_wind": (["level", "lat", "lon"], aryWv * units('m/s')),
+        "omega": (["level", "lat", "lon"], aryOmg / 100 * 3600 * units('Pa/s')), # Pa/s => hPa/h
+        "mslp": (["lat", "lon"], arySlp / 100 * units('hPa')
     },
     coords={
         "level": levels,
@@ -294,12 +299,13 @@ dsp['ttd'] = dsp['temperature'] - dsp['dewpoint_temperature']
 # 相当温位
 dsp['Equivalent_Potential_temperature'] = mpcalc.equivalent_potential_temperature(dsp['level'],dsp['temperature'],dsp['dewpoint_temperature'])
  
-dsp['Geopotential_height'].data = ndimage.gaussian_filter(dsp['Geopotential_height'].data, sigma=(0, 4, 4))
-dsp['temperature'].data = ndimage.gaussian_filter(dsp['temperature'].data, sigma=(0, 4, 4))
+dsp['Geopotential_height'].data = ndimage.gaussian_filter(dsp['Geopotential_height'].data, sigma=(0, 2, 2))
+dsp['temperature'].data = ndimage.gaussian_filter(dsp['temperature'].data, sigma=(0, 2, 2))
 dsp['vorticity'].data = ndimage.gaussian_filter(dsp['vorticity'].data, sigma=(0, 1, 1))
 dsp['omega'].data = ndimage.gaussian_filter(dsp['omega'].data, sigma=(0, 1, 1))
 dsp['ttd'].data = ndimage.gaussian_filter(dsp['ttd'].data, sigma=(0, 1, 1))
-dsp['Equivalent_Potential_temperature'].data = ndimage.gaussian_filter(dsp['Equivalent_Potential_temperature'].data, sigma=(0, 2, 2))
+dsp['Equivalent_Potential_temperature'].data = ndimage.gaussian_filter(dsp['Equivalent_Potential_temperature'].data, sigma=(0, 1, 1))
+dsp['mslp'].data = ndimage.gaussian_filter(dsp['mslp'].data, sigma=(2, 2))
 
 # 高層観測地点
 url = "https://www.ncei.noaa.gov/pub/data/igra/igra2-station-list.txt"
@@ -364,14 +370,16 @@ ax.barbs(dsp['lon'][wind_slice[0]], dsp['lat'][wind_slice[1]], dsp['u_wind'][np.
    
 ## 図の説明
 fig3.text(0.5, 0.01, dt_str + " 850hPa EPT(K), Wind" ,ha='center',va='bottom', size=15)
- 
+
+# 出力先ディレクトリを作成
+output_dir = os.path.join("Data/", dt_str)
+os.makedirs(output_dir, exist_ok=True)  # 再帰的に作成、すでにあってもOK
+
 ## file出力
 output_fig_nm="{0}_850ept.png".format(dt_str)
-out_path = os.path.join(output_fig_nm)
+out_path = os.path.join(output_dir, output_fig_nm)
 plt.savefig(out_path)
 print("output:{}".format(output_fig_nm))
- 
-## 表示
 plt.show()
  
 for tagHp in [300,400,500,700,850,925]:
@@ -515,9 +523,7 @@ for tagHp in [300,400,500,700,850,925]:
  
     ## 出力
     out_fn="{0}_{1:03d}ttd.png".format(dt_str,tagHp)
-    out_path = os.path.join(out_fn)
+    out_path = os.path.join(output_dir, out_fn)
     plt.savefig(out_path)
     print("output:{}".format(out_fn))
-
-    ## 表示
     plt.show()
