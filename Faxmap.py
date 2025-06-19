@@ -254,7 +254,7 @@ ds = xr.Dataset(
         "u_wind": (["level", "lat", "lon"], aryWu * units('m/s')),
         "v_wind": (["level", "lat", "lon"], aryWv * units('m/s')),
         "omega": (["level", "lat", "lon"], aryOmg / 100 * 3600 * units('Pa/s')), # Pa/s => hPa/h
-        "mslp": (["lat", "lon"], arySlp / 100 * units('hPa')
+        "mslp": (["lat", "lon"], arySlp / 100 * units('hPa'))
     },
     coords={
         "level": levels,
