@@ -167,10 +167,10 @@ i_area = [105, 165, 15, 60]  # 日本付近
 str_area = "jp"   # ファイル名に利用
  
 ## GPVの切り出し領域の指定：(lonW,latS)-(lonE,latN)の矩形                                                                                                      
-latS=0
+latS=10
 latN=60
-lonW=90
-lonE=180
+lonW=100
+lonE=170
  
 # データの格納先フォルダー名
 ##!!! GRIB2データの保存先をFolderを指定すること !!!
@@ -307,7 +307,7 @@ dsp['vorticity'].data = ndimage.gaussian_filter(dsp['vorticity'].data, sigma=(0,
 dsp['omega'].data = ndimage.gaussian_filter(dsp['omega'].data, sigma=(0, 2, 2))
 dsp['ttd'].data = ndimage.gaussian_filter(dsp['ttd'].data, sigma=(0, 2, 2))
 dsp['Equivalent_Potential_temperature'].data = ndimage.gaussian_filter(dsp['Equivalent_Potential_temperature'].data, sigma=(0, 1, 1))
-dsp['mslp'].data = ndimage.gaussian_filter(dsp['mslp'].data, sigma=(4, 4))
+dsp['mslp'].data = ndimage.gaussian_filter(dsp['mslp'].data, sigma=(6, 6))
 
 # 高層観測地点
 url = "https://www.ncei.noaa.gov/pub/data/igra/igra2-station-list.txt"
@@ -490,7 +490,7 @@ for tagHp in [300,400,500,700,850,925]:
     # preT hPa面 等温度線
     cn_tmp0 = ax.contour(dsp['lon'], dsp['lat'], dsp['temperature'][np.where(levels == tagHp)[0][0],:,:], colors='red', linewidths=1.0, linestyles='solid', levels=np.arange(-60, 42, 3), transform=proj)
     ax.clabel(cn_tmp0, fontsize=8, inline=True, inline_spacing=5, fmt='%i', rightside_up=True, colors='red')
-    cn_tmp1 = ax.contour(dsp['lon'], dsp['lat'], dsp['temperature'][np.where(levels == tagHp)[0][0],:,:], colors='red', linewidths=2.0, linestyles='solid', levels=np.arange(-60, 42, 15), transform=proj)
+    cn_tmp1 = ax.contour(dsp['lon'], dsp['lat'], dsp['temperature'][np.where(levels == tagHp)[0][0],:,:], colors='red', linewidths=2.0, linestyles='solid', levels=np.arange(-60, 42, 6), transform=proj)
     ax.clabel(cn_tmp1, fontsize=12, inline=True, inline_spacing=5, fmt='%i', rightside_up=True, colors='red')
  
     if tagHp == 300:
