@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>最新気象図表示（UTC -2h）</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+    }
+    .container {
+      display: flex;
+      height: 100vh;
+    }
+    .sidebar {
+      width: 10%;
+      background-color: #f0f0f0;
+      padding: 1em;
+      box-sizing: border-box;
+      overflow-y: auto;
+    }
+    .main {
+      width: 90%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 1fr);
+      gap: 4px;
+      padding: 4px;
+      box-sizing: border-box;
+    }
+    .main img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      border: 1px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="sidebar">
+    <h3>表示時刻</h3>
+    <p id="time-label"></p>
+    <p>6種類の図を表示中：</p>
+    <ul>
+      <li>地上気圧図</li>
+      <li>500hPa 湿数</li>
+      <li>300hPa 湿数</li>
+      <li>850hPa 相当温位</li>
+      <li>850hPa 湿数</li>
+      <li>700hPa 湿数</li>
+    </ul>
+  </div>
+  <div class="main" id="imageGrid">
+    <!-- 画像はJavaScriptで挿入 -->
+  </div>
+</div>
+
+<script>
+  // 現在のUTC時刻から2時間前を取得し、YYYYMMDDHH 形式に
+  const now = new Date();
+  const utcTime = new Date(now.getTime() - 2 * 60 * 60 * 1000); // 2時間前のUTC
+  const yyyy = utcTime.getUTCFullYear();
+  const MM = String(utcTime.getUTCMonth() + 1).padStart(2, '0');
+  const dd = String(utcTime.getUTCDate()).padStart(2, '0');
+  const HH = String(utcTime.getUTCHours()).padStart(2, '0');
+  const latestTime = `${yyyy}${MM}${dd}${HH}`;
+
+  // 表示用ラベルに時刻表示
+  document.getElementById("time-label").textContent = latestTime + " (UTC -2h)";
+
+  // 対象画像のサフィックス
+  const suffixes = [
+    "_surf.png", "_500ttd.png", "_300ttd.png",
+    "_850ept.png", "_850ttd.png", "_700ttd.png"
+  ];
+
+  // 各画像を挿入
+  const grid = document.getElementById("imageGrid");
+  suffixes.forEach(suffix => {
+    const img = document.createElement("img");
+    img.src = `./Data/${latestTime}/${latestTime}${suffix}`;
+    img.alt = latestTime + suffix;
+    grid.appendChild(img);
+  });
+</script>
+
+</body>
+</html>
