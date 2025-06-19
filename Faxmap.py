@@ -113,7 +113,7 @@ def detect_peaks(image, filter_size, dist_cut, flag=0):
       newy.append(y[i])
     peaks_index=(np.array(newx),np.array(newy))
     return peaks_index
-
+        
 # 高層気象観測データ取得
 def fetch_wyoming_data(wmo, dt, tagHp):
     url = (
@@ -381,7 +381,63 @@ out_path = os.path.join(output_dir, output_fig_nm)
 plt.savefig(out_path)
 print("output:{}".format(output_fig_nm))
 plt.show()
+
+## 図法指定                                                                            
+proj = ccrs.PlateCarree()
+latlon_proj = ccrs.PlateCarree()
+## 図のSIZE指定inch                                                                        
+fig3 = plt.figure(figsize=(10,8))
+## 余白設定                                                                                
+plt.subplots_adjust(left=0, right=1, bottom=0.06, top=0.98)                  
+## 作図                                                                                    
+ax = fig3.add_subplot(1, 1, 1, projection=proj)
+ax.set_extent(i_area, proj)
  
+# 地上気圧
+clevs_mslp = np.arange(800, 1200, 4)
+ax01.contour(lon, lat, dsp['mslp'], clevs_mslp, colors='black', linestyles='solid', linewidths=[1.25, 0.75, 0.75, 0.75, 0.75], transform=crs_data)
+ 
+h_y, h_x = find_peaks(dsp['mslp'] * 0.01)
+l_y, l_x = find_peaks(dsp['mslp'] * 0.01, maxima=False)
+
+for x, y in zip(h_x, h_y):
+    lon_pt = lon[y, x]
+    lat_pt = lat[y, x]
+    val = mslp[y, x]
+    scattertext(ax01, [lon_pt], [lat_pt], 'H', size=10, color='blue', fontweight='bold', transform=crs_data)
+    scattertext(ax01, [lon_pt], [lat_pt], [val], formatter='.0f', size=8, color='blue', loc=(0, -15), transform=crs_data)
+ 
+for x, y in zip(l_x, l_y):
+    lon_pt = lon[y, x]
+    lat_pt = lat[y, x]
+    val = mslp[y, x]
+    scattertext(ax01, [lon_pt], [lat_pt], 'L', size=10, color='red', fontweight='bold', transform=crs_data)
+    scattertext(ax01, [lon_pt], [lat_pt], [val], formatter='.0f', size=8, color='red', loc=(0, -15), transform=crs_data)
+ 
+## 海岸線
+ax.coastlines(resolution='50m', linewidth=1.6) # 海岸線の解像度を上げる  
+ 
+# グリッド線を引く                                                              
+xticks=np.arange(0,360,dlon)
+yticks=np.arange(-90,90.1,dlat)
+gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=False, linewidth=1, alpha=0.8)
+gl.xlocator = mticker.FixedLocator(xticks)
+gl.ylocator = mticker.FixedLocator(yticks)
+   
+## 図の説明
+fig3.text(0.5, 0.01, dt_str + " Sea Level Pressure(hPa)" ,ha='center',va='bottom', size=15)
+
+# 出力先ディレクトリを作成
+output_dir = os.path.join("Data/", dt_str)
+os.makedirs(output_dir, exist_ok=True)  # 再帰的に作成、すでにあってもOK
+
+## file出力
+output_fig_nm="{0}_surf.png".format(dt_str)
+out_path = os.path.join(output_dir, output_fig_nm)
+plt.savefig(out_path)
+print("output:{}".format(output_fig_nm))
+plt.show()
+
 for tagHp in [300,400,500,700,850,925]:
     lons, lats, temps, ttds, u_winds, v_winds = [], [], [], [], [], []
  
