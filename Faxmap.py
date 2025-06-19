@@ -18,6 +18,7 @@ import sys
 import time
 import xarray as xr
 from io import StringIO
+from metpy.calc import find_peaks
 from metpy.plots.wx_symbols import sky_cover
 from metpy.plots import StationPlot
 from metpy.units import units
