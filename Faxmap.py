@@ -307,7 +307,7 @@ dsp['vorticity'].data = ndimage.gaussian_filter(dsp['vorticity'].data, sigma=(0,
 dsp['omega'].data = ndimage.gaussian_filter(dsp['omega'].data, sigma=(0, 1, 1))
 dsp['ttd'].data = ndimage.gaussian_filter(dsp['ttd'].data, sigma=(0, 1, 1))
 dsp['Equivalent_Potential_temperature'].data = ndimage.gaussian_filter(dsp['Equivalent_Potential_temperature'].data, sigma=(0, 1, 1))
-dsp['mslp'].data = ndimage.gaussian_filter(dsp['mslp'].data, sigma=(2, 2))
+dsp['mslp'].data = ndimage.gaussian_filter(dsp['mslp'].data, sigma=(4, 4))
 
 # 高層観測地点
 url = "https://www.ncei.noaa.gov/pub/data/igra/igra2-station-list.txt"
