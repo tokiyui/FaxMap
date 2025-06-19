@@ -2,16 +2,10 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>最新気象図表示（UTC -2h）</title>
+  <title>12時間単位気象図表示（UTC-2h）</title>
   <style>
-    body {
-      margin: 0;
-      font-family: sans-serif;
-    }
-    .container {
-      display: flex;
-      height: 100vh;
-    }
+    body { margin: 0; font-family: sans-serif; }
+    .container { display: flex; height: 100vh; }
     .sidebar {
       width: 10%;
       background-color: #f0f0f0;
@@ -53,30 +47,34 @@
     </ul>
   </div>
   <div class="main" id="imageGrid">
-    <!-- 画像はJavaScriptで挿入 -->
+    <!-- 画像を挿入 -->
   </div>
 </div>
 
 <script>
-  // 現在のUTC時刻から2時間前を取得し、YYYYMMDDHH 形式に
+  // 現在のUTCから2時間引く
   const now = new Date();
-  const utcTime = new Date(now.getTime() - 2 * 60 * 60 * 1000); // 2時間前のUTC
-  const yyyy = utcTime.getUTCFullYear();
-  const MM = String(utcTime.getUTCMonth() + 1).padStart(2, '0');
-  const dd = String(utcTime.getUTCDate()).padStart(2, '0');
-  const HH = String(utcTime.getUTCHours()).padStart(2, '0');
+  const utcMinus2h = new Date(now.getTime() - 2 * 60 * 60 * 1000);
+
+  // 12時間単位に丸め（00時 または 12時）
+  let hour = utcMinus2h.getUTCHours();
+  hour = hour < 12 ? 0 : 12;
+
+  const yyyy = utcMinus2h.getUTCFullYear();
+  const MM = String(utcMinus2h.getUTCMonth() + 1).padStart(2, '0');
+  const dd = String(utcMinus2h.getUTCDate()).padStart(2, '0');
+  const HH = String(hour).padStart(2, '0');
+
   const latestTime = `${yyyy}${MM}${dd}${HH}`;
 
-  // 表示用ラベルに時刻表示
-  document.getElementById("time-label").textContent = latestTime + " (UTC -2h)";
+  // 表示
+  document.getElementById("time-label").textContent = latestTime + " (UTC-2h 丸め)";
 
-  // 対象画像のサフィックス
   const suffixes = [
     "_surf.png", "_500ttd.png", "_300ttd.png",
     "_850ept.png", "_850ttd.png", "_700ttd.png"
   ];
 
-  // 各画像を挿入
   const grid = document.getElementById("imageGrid");
   suffixes.forEach(suffix => {
     const img = document.createElement("img");
