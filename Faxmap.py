@@ -395,7 +395,7 @@ ax.set_extent(i_area, proj)
  
 # 地上気圧
 clevs_mslp = np.arange(800, 1200, 4)
-ax01.contour(lon, lat, dsp['mslp'], clevs_mslp, colors='black', linestyles='solid', linewidths=[1.25, 0.75, 0.75, 0.75, 0.75], transform=crs_data)
+ax.contour(lon, lat, dsp['mslp'], clevs_mslp, colors='black', linestyles='solid', linewidths=[1.25, 0.75, 0.75, 0.75, 0.75], transform=crs_data)
  
 h_y, h_x = find_peaks(dsp['mslp'] * 0.01)
 l_y, l_x = find_peaks(dsp['mslp'] * 0.01, maxima=False)
