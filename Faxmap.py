@@ -223,7 +223,7 @@ grbOmg = sorted(grbs.select(shortName="w", typeOfLevel='isobaricInhPa', level=la
 
 # 気圧
 arySlp = np.zeros([lat_size, lon_size]) 
-valSlp, _, _ = grbs.select(name='Mean sea level pressure')[0].data(lat1=lat_min, lat2=lat_max, lon1=lon_min, lon2=lon_max)
+valSlp, _, _ = grbs.select(name='Mean sea level pressure')[0].data(lat1=latS,lat2=latN,lon1=lonW,lon2=lonE)
 
 # 要素毎に3次元配列作成
 for l in range(l_size):
