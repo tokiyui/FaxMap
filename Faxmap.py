@@ -405,15 +405,15 @@ for x, y in zip(h_x, h_y):
     lon_pt = lon2d[y, x]
     lat_pt = lat2d[y, x]
     val = dsp['mslp'][y, x]
-    scattertext(ax01, [lon_pt], [lat_pt], 'H', size=10, color='blue', fontweight='bold', transform=proj)
-    scattertext(ax01, [lon_pt], [lat_pt], [val], formatter='.0f', size=8, color='blue', loc=(0, -15), transform=proj)
+    scattertext(ax, [lon_pt], [lat_pt], 'H', size=10, color='blue', fontweight='bold', transform=proj)
+    scattertext(ax, [lon_pt], [lat_pt], [val], formatter='.0f', size=8, color='blue', loc=(0, -15), transform=proj)
  
 for x, y in zip(l_x, l_y):
     lon_pt = lon2d[y, x]
     lat_pt = lat2d[y, x]
     val = dsp['mslp'][y, x]
-    scattertext(ax01, [lon_pt], [lat_pt], 'L', size=10, color='red', fontweight='bold', transform=proj)
-    scattertext(ax01, [lon_pt], [lat_pt], [val], formatter='.0f', size=8, color='red', loc=(0, -15), transform=proj)
+    scattertext(ax, [lon_pt], [lat_pt], 'L', size=10, color='red', fontweight='bold', transform=proj)
+    scattertext(ax, [lon_pt], [lat_pt], [val], formatter='.0f', size=8, color='red', loc=(0, -15), transform=proj)
  
 ## 海岸線
 ax.coastlines(resolution='50m', linewidth=1.6) # 海岸線の解像度を上げる  
