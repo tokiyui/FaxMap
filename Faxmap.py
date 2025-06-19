@@ -20,7 +20,7 @@ import xarray as xr
 from io import StringIO
 from metpy.calc import find_peaks
 from metpy.plots.wx_symbols import sky_cover
-from metpy.plots import StationPlot
+from metpy.plots import StationPlot, scattertext
 from metpy.units import units
 from scipy.ndimage import maximum_filter, minimum_filter
 
