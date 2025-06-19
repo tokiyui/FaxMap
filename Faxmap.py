@@ -163,7 +163,7 @@ if not os.path.exists(fig_fld):
     os.makedirs(fig_fld)
  
 # 描画する範囲の大まかな指定
-i_area = [110, 160, 15, 50]  # 日本付近
+i_area = [105, 165, 15, 60]  # 日本付近
 str_area = "jp"   # ファイル名に利用
  
 ## GPVの切り出し領域の指定：(lonW,latS)-(lonE,latN)の矩形                                                                                                      
@@ -302,10 +302,10 @@ dsp['ttd'] = dsp['temperature'] - dsp['dewpoint_temperature']
 dsp['Equivalent_Potential_temperature'] = mpcalc.equivalent_potential_temperature(dsp['level'],dsp['temperature'],dsp['dewpoint_temperature'])
  
 dsp['Geopotential_height'].data = ndimage.gaussian_filter(dsp['Geopotential_height'].data, sigma=(0, 2, 2))
-dsp['temperature'].data = ndimage.gaussian_filter(dsp['temperature'].data, sigma=(0, 2, 2))
-dsp['vorticity'].data = ndimage.gaussian_filter(dsp['vorticity'].data, sigma=(0, 1, 1))
-dsp['omega'].data = ndimage.gaussian_filter(dsp['omega'].data, sigma=(0, 1, 1))
-dsp['ttd'].data = ndimage.gaussian_filter(dsp['ttd'].data, sigma=(0, 1, 1))
+dsp['temperature'].data = ndimage.gaussian_filter(dsp['temperature'].data, sigma=(0, 4, 4))
+dsp['vorticity'].data = ndimage.gaussian_filter(dsp['vorticity'].data, sigma=(0, 2, 2))
+dsp['omega'].data = ndimage.gaussian_filter(dsp['omega'].data, sigma=(0, 2, 2))
+dsp['ttd'].data = ndimage.gaussian_filter(dsp['ttd'].data, sigma=(0, 2, 2))
 dsp['Equivalent_Potential_temperature'].data = ndimage.gaussian_filter(dsp['Equivalent_Potential_temperature'].data, sigma=(0, 1, 1))
 dsp['mslp'].data = ndimage.gaussian_filter(dsp['mslp'].data, sigma=(4, 4))
 
