@@ -397,23 +397,33 @@ ax.set_extent(i_area, proj)
 clevs_mslp = np.arange(800, 1200, 4)
 ax.contour(dsp['lon'], dsp['lat'], dsp['mslp'], clevs_mslp, colors='black', linestyles='solid', linewidths=[1.25, 0.75, 0.75, 0.75, 0.75], transform=proj)
  
-h_y, h_x = find_peaks(dsp['mslp'] * 0.01)
-l_y, l_x = find_peaks(dsp['mslp'] * 0.01, maxima=False)
-lon2d, lat2d = np.meshgrid(dsp['lon'].values, dsp['lat'].values)
+# 気圧 H
+maxid = detect_peaks(dsp['mslp'].values, filter_size=30, dist_cut=8.0)
+for j in range(len(maxid[0])):                                                      
+    wlon = dsp['lon'][maxid[1][j]]
+    wlat = dsp['lat'][maxid[0][j]]
+    # 図の範囲内に座標があるか確認                                                        
+    fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
+    if ( fig_z[0] > 0.05 and fig_z[0] < 0.95  and fig_z[1] > 0.05 and fig_z[1] < 0.95):
+        ax.plot(wlon, wlat, marker='x' , markersize=4, color="blue", transform=proj)
+        ax.text(wlon, wlat + 0.5, 'H', size=16, color="blue", transform=proj)
+        val = dsp['mslp'].values[maxid[0][j]][maxid[1][j]]
+        ival = int(val)
+        ax.text(fig_z[0], fig_z[1] - 0.01, str(ival), size=12, color="blue", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
 
-for x, y in zip(h_x, h_y):
-    lon_pt = lon2d[y, x]
-    lat_pt = lat2d[y, x]
-    val = dsp['mslp'][y, x]
-    scattertext(ax, [lon_pt], [lat_pt], 'H', size=10, color='blue', fontweight='bold', transform=proj)
-    scattertext(ax, [lon_pt], [lat_pt], [val], formatter='.0f', size=8, color='blue', loc=(0, -15), transform=proj)
- 
-for x, y in zip(l_x, l_y):
-    lon_pt = lon2d[y, x]
-    lat_pt = lat2d[y, x]
-    val = dsp['mslp'][y, x]
-    scattertext(ax, [lon_pt], [lat_pt], 'L', size=10, color='red', fontweight='bold', transform=proj)
-    scattertext(ax, [lon_pt], [lat_pt], [val], formatter='.0f', size=8, color='red', loc=(0, -15), transform=proj)
+# 気圧 L
+minid = detect_peaks(dsp['mslp'].values, filter_size=30, dist_cut=8.0,flag=1)
+    for j in range(len(minid[0])):
+    wlon = dsp['lon'][minid[1][j]]
+    wlat = dsp['lat'][minid[0][j]]
+    # 図の範囲内に座標があるか確認                                                        
+    fig_z, _, _ = transform_lonlat_to_figure((wlon,wlat),ax,proj)
+    if ( fig_z[0] > 0.05 and fig_z[0] < 0.95  and fig_z[1] > 0.05 and fig_z[1] < 0.95):
+        ax.plot(wlon, wlat, marker='x' , markersize=4, color="red", transform=proj)
+        ax.text(wlon, wlat + 0.5, 'L', size=16, color="red", transform=proj)
+        val = dsp['mslp'].values[minid[0][j]][minid[1][j]]
+        ival = int(val)
+        ax.text(fig_z[0], fig_z[1] - 0.01, str(ival), size=12, color="red", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
  
 ## 海岸線
 ax.coastlines(resolution='50m', linewidth=1.6) # 海岸線の解像度を上げる  
