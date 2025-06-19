@@ -369,7 +369,7 @@ wind_slice = (slice(None, None, 8), slice(None, None, 8))
 ax.barbs(dsp['lon'][wind_slice[0]], dsp['lat'][wind_slice[1]], dsp['u_wind'][np.where(levels == 850)[0][0],wind_slice[0],wind_slice[1]].values, dsp['v_wind'][np.where(levels == 850)[0][0],wind_slice[0],wind_slice[1]].values, length=5.5, pivot='middle', color='black', transform=latlon_proj)
    
 ## 図の説明
-fig3.text(0.5, 0.01, dt_str + " 850hPa EPT(K), Wind" ,ha='center',va='bottom', size=15)
+fig3.text(0.5, 0.01, dt_str + " 850hPa EPT(K), Wind" ,ha='center',va='bottom', size=20)
 
 # 出力先ディレクトリを作成
 output_dir = os.path.join("Data/", dt_str)
@@ -425,7 +425,7 @@ gl.xlocator = mticker.FixedLocator(xticks)
 gl.ylocator = mticker.FixedLocator(yticks)
    
 ## 図の説明
-fig3.text(0.5, 0.01, dt_str + " Sea Level Pressure(hPa)" ,ha='center',va='bottom', size=15)
+fig3.text(0.5, 0.01, dt_str + " Sea Level Pressure(hPa)" ,ha='center',va='bottom', size=20)
 
 # 出力先ディレクトリを作成
 output_dir = os.path.join("Data/", dt_str)
@@ -483,7 +483,7 @@ for tagHp in [300,400,500,700,850,925]:
     ax.clabel(cn_tmp1, fontsize=12, inline=True, inline_spacing=5, fmt='%i', rightside_up=True, colors='red')
  
     if tagHp == 300:
-        ax.contourf(dsp['lon'], dsp['lat'], dsp['wind_speed'][np.where(levels == tagHp)[0][0],:,:].values, [80,100,120], colors=['white','cyan','pink','magenta'], extend='both', transform=latlon_proj, alpha=0.5)
+        ax.contourf(dsp['lon'], dsp['lat'], dsp['wind_speed'][np.where(levels == tagHp)[0][0],:,:].values, [80,100,120], colors=['1.0','cyan','pink','magenta'], extend='max', transform=latlon_proj, alpha=0.5)
     elif tagHp == 500:
         ax.contourf(dsp['lon'], dsp['lat'], dsp['vorticity'][np.where(levels == tagHp)[0][0],:,:] * 1000000, np.arange(0, 200, 10), cmap="Oranges", extend='max', transform=latlon_proj, alpha=0.5)
     elif tagHp == 700:
@@ -575,7 +575,7 @@ for tagHp in [300,400,500,700,850,925]:
     stationplot.plot_barb(u_winds, v_winds, length=5)
  
     ## 図の説明
-    fig.text(0.5, 0.01, dt_str + " {0}hPa Tmp, T-Td".format(int(tagHp)), ha='center',va='bottom', size=18)
+    fig.text(0.5, 0.01, dt_str + " {0}hPa Tmp, T-Td".format(int(tagHp)), ha='center',va='bottom', size=20)
  
     ## 出力
     out_fn="{0}_{1:03d}ttd.png".format(dt_str,tagHp)
