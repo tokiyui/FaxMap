@@ -494,7 +494,7 @@ for tagHp in [300,400,500,700,850,925]:
     ax.clabel(cn_tmp1, fontsize=12, inline=True, inline_spacing=5, fmt='%i', rightside_up=True, colors='red')
  
     if tagHp == 300:
-        ax.contourf(dsp['lon'], dsp['lat'], dsp['wind_speed'][np.where(levels == tagHp)[0][0],:,:].values, [80,100,120], colors=['1.0','cyan','pink','magenta'], extend='max', transform=proj, alpha=0.5)
+        ax.contourf(dsp['lon'], dsp['lat'], dsp['wind_speed'][np.where(levels == tagHp)[0][0],:,:].values, [40,80,120], colors=['1.0','cyan','pink','magenta'], extend='max', transform=proj, alpha=0.5)
     elif tagHp == 500:
         ax.contourf(dsp['lon'], dsp['lat'], dsp['vorticity'][np.where(levels == tagHp)[0][0],:,:] * 1000000, np.arange(0, 200, 10), cmap="Oranges", extend='max', transform=proj, alpha=0.5)
     elif tagHp == 700:
