@@ -95,8 +95,10 @@ def plot_sounding(station_id, station_name, dt):
     ax.set_ylabel('Pressure (hPa)')
     ax.invert_yaxis()
     ax.set_yscale('log')
+    ax.set_xlim(250, 400)
+    ax.set_yticks(np.arange(255, 405, 15))
     ax.set_ylim(1050, 200)
-    ax.set_yticks(np.arange(1000, 199, -100))
+    ax.set_yticks(np.arange(1000, 150, -100))
     ax.get_yaxis().set_major_formatter(plt.ScalarFormatter())
 
     ax.grid(True, which='both', linestyle=':')
