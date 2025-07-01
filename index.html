@@ -12,6 +12,9 @@
       padding: 1em;
       box-sizing: border-box;
       overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
     .main {
       width: 90%;
@@ -28,6 +31,16 @@
       object-fit: contain;
       border: 1px solid #ccc;
     }
+    .sidebar img {
+      width: 100%;
+      height: auto;
+      margin-top: 1em;
+      border: 1px solid #ccc;
+    }
+    select {
+      width: 100%;
+      margin-top: 0.5em;
+    }
   </style>
 </head>
 <body>
@@ -36,6 +49,29 @@
   <div class="sidebar">
     <h3>表示時刻</h3>
     <p id="time-label"></p>
+
+    <label for="stationSelect">エマグラム地点</label>
+    <select id="stationSelect">
+      <option value="47401">稚内</option>
+      <option value="47412">札幌</option>
+      <option value="47418">釧路</option>
+      <option value="47582">秋田</option>
+      <option value="47600">輪島</option>
+      <option value="47646" selected>館野</option>
+      <option value="47678">八丈島</option>
+      <option value="47741">松江</option>
+      <option value="47778">潮岬</option>
+      <option value="47807">福岡</option>
+      <option value="47827">鹿児島</option>
+      <option value="47909">名瀬／本茶峠</option>
+      <option value="47918">石垣島</option>
+      <option value="47945">南大東島</option>
+      <option value="47971">父島</option>
+      <option value="47991">南鳥島</option>
+    </select>
+
+    <img id="emagram" src="" alt="エマグラム画像" />
+    
     <ul>
       <li>地上天気図</li>
       <li>500hPa湿数</li>
@@ -45,6 +81,7 @@
       <li>700hPa湿数</li>
     </ul>
   </div>
+
   <div class="main" id="imageGrid">
     <!-- 画像を挿入 -->
   </div>
@@ -65,8 +102,6 @@
   const HH = String(hour).padStart(2, '0');
 
   const latestTime = `${yyyy}${MM}${dd}${HH}`;
-
-  // 表示
   document.getElementById("time-label").textContent = latestTime;
 
   const suffixes = [
@@ -81,6 +116,21 @@
     img.alt = latestTime + suffix;
     grid.appendChild(img);
   });
+
+  const emagramImg = document.getElementById("emagram");
+  const stationSelect = document.getElementById("stationSelect");
+
+  function updateEmagram() {
+    const station = stationSelect.value;
+    emagramImg.src = `./Emagram/${station}_${latestTime}.png`;
+    emagramImg.alt = `${station}のエマグラム画像`;
+  }
+
+  // 初期表示
+  updateEmagram();
+
+  // 地点変更時に更新
+  stationSelect.addEventListener("change", updateEmagram);
 </script>
 
 </body>
