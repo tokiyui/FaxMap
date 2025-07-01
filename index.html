@@ -122,7 +122,7 @@
 
   function updateEmagram() {
     const station = stationSelect.value;
-    emagramImg.src = `./Emagram/${station}_${latestTime}.png`;
+    emagramImg.src = `./Data/${latestTime}UTC/${station}_${latestTime}.png`;
     emagramImg.alt = `${station}のエマグラム画像`;
   }
 
