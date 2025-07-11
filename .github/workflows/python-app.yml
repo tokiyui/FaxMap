@@ -1,12 +1,7 @@
 name: Python application
 
 on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-  schedule:
-    - cron: '15 01,02,03,13,14,15 * * *'
+  workflow_dispatch:
 
 permissions:
   actions: write
@@ -21,29 +16,27 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Settings
+      - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y build-essential
           python -m pip install --upgrade pip
           pip install numpy pygrib metpy cartopy siphon
-          export PATH=$PATH:/opt/hostedtoolcache/Python/3.10.13/x64/lib/python3.10/site-packages:/home/runner/.local/lib/python3.10/site-packages
 
-      - name: Plotting
+      - name: Run plotting scripts
         run: |
           python Faxmap.py
           python emagram.py
 
-      - name: Commit and Push Changes
-        id: git_changes
+      - name: Commit and push PNG images
         run: |
-          git diff --quiet || echo "::set-output name=changes::yes"
-          echo ${{ secrets.TOKEN }}
-          echo "https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}"
-          git remote set-url origin https://github-actions:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
           git config --global user.name "${GITHUB_ACTOR}"
           git config --global user.email "${GITHUB_ACTOR}@users.noreply.github.com"
-          shopt -s globstar
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${GITHUB_REPOSITORY}
           git add **/*.png
-          git diff --cached --quiet || git commit -m "Add Pictures"
-          git push origin main
+          if git diff --cached --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Add Pictures"
+            git push origin main
+          fi
