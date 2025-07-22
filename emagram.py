@@ -31,7 +31,7 @@ stations = {
 }
 
 def get_nearest_synoptic_time():
-    now = datetime.datetime.utcnow() - datetime.timedelta(minutes=90)
+    now = datetime.datetime.now(datetime.UTC) - datetime.timedelta(minutes=90)
     hour = 0 if now.hour < 12 else 12
     return datetime.datetime(now.year, now.month, now.day, hour)
 
