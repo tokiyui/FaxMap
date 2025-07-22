@@ -139,7 +139,7 @@ def fetch_wyoming_data(wmo, dt, tagHp):
             return temp, ttd, u_wind, v_wind
  
 # 現在のUTC時刻を取得
-now_utc = datetime.datetime.utcnow()
+now_utc = datetime.datetime.now(datetime.UTC)
  
 # 8時間引く
 adjusted_time = now_utc - datetime.timedelta(hours=12) - datetime.timedelta(minutes=90)
