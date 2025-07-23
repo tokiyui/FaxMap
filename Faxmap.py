@@ -142,7 +142,7 @@ def fetch_wyoming_data(wmo, dt, tagHp):
 now_utc = datetime.datetime.now(datetime.UTC)
  
 # 8時間引く
-adjusted_time = now_utc - datetime.timedelta(hours=12) - datetime.timedelta(minutes=90)
+adjusted_time = now_utc - datetime.timedelta(hours=12) - datetime.timedelta(minutes=80)
  
 # 6時間単位で切り捨て
 truncated_hour = (adjusted_time.hour // 12) * 12
