@@ -300,7 +300,9 @@ dsp['ttd'] = dsp['temperature'] - dsp['dewpoint_temperature']
  
 # 相当温位
 dsp['Equivalent_Potential_temperature'] = mpcalc.equivalent_potential_temperature(dsp['level'],dsp['temperature'],dsp['dewpoint_temperature'])
- 
+
+dsp['NewIndex'] = 2 * (dsp['temperature'][np.where(levels == 850)[0][0],:,:] - dsp['temperature'][np.where(levels == 500)[0][0],:,:]) - dsp['ttd'][np.where(levels == 850)[0][0],:,:] - dsp['temperature'][np.where(levels == 700)[0][0],:,:] 
+
 dsp['Geopotential_height'].data = ndimage.gaussian_filter(dsp['Geopotential_height'].data, sigma=(0, 4, 4))
 dsp['temperature'].data = ndimage.gaussian_filter(dsp['temperature'].data, sigma=(0, 6, 6))
 dsp['vorticity'].data = ndimage.gaussian_filter(dsp['vorticity'].data, sigma=(0, 2, 2))
@@ -308,7 +310,6 @@ dsp['omega'].data = ndimage.gaussian_filter(dsp['omega'].data, sigma=(0, 2, 2))
 dsp['ttd'].data = ndimage.gaussian_filter(dsp['ttd'].data, sigma=(0, 2, 2))
 dsp['Equivalent_Potential_temperature'].data = ndimage.gaussian_filter(dsp['Equivalent_Potential_temperature'].data, sigma=(0, 2, 2))
 dsp['mslp'].data = ndimage.gaussian_filter(dsp['mslp'].data, sigma=(6, 6))
-dsp['NewIndex'].data = 2 * (dsp['temperature'][np.where(levels == 850)[0][0],:,:] - dsp['temperature'][np.where(levels == 500)[0][0],:,:]) - dsp['ttd'][np.where(levels == 850)[0][0],:,:] - dsp['temperature'][np.where(levels == 700)[0][0],:,:] 
 
 # 高層観測地点
 url = "https://www.ncei.noaa.gov/pub/data/igra/igra2-station-list.txt"
