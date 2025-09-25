@@ -308,6 +308,7 @@ dsp['omega'].data = ndimage.gaussian_filter(dsp['omega'].data, sigma=(0, 2, 2))
 dsp['ttd'].data = ndimage.gaussian_filter(dsp['ttd'].data, sigma=(0, 2, 2))
 dsp['Equivalent_Potential_temperature'].data = ndimage.gaussian_filter(dsp['Equivalent_Potential_temperature'].data, sigma=(0, 2, 2))
 dsp['mslp'].data = ndimage.gaussian_filter(dsp['mslp'].data, sigma=(6, 6))
+dsp['NewIndex'].data = 2 * (dsp['temperature'][np.where(levels == 850)[0][0],:,:] - dsp['temperature'][np.where(levels == 500)[0][0],:,:]) - dsp['ttd'][np.where(levels == 850)[0][0],:,:] - dsp['temperature'][np.where(levels == 700)[0][0],:,:] 
 
 # 高層観測地点
 url = "https://www.ncei.noaa.gov/pub/data/igra/igra2-station-list.txt"
@@ -396,7 +397,10 @@ ax.set_extent(i_area, proj)
 # 地上気圧
 clevs_mslp = np.arange(800, 1200, 4)
 ax.contour(dsp['lon'], dsp['lat'], dsp['mslp'], clevs_mslp, colors='black', linestyles='solid', linewidths=[1.25, 0.75, 0.75, 0.75, 0.75], transform=proj)
- 
+
+# NewIndex
+ax.contourf(dsp['lon'], dsp['lat'], dsp['NewIndex'].values, [20,30,40], colors=['white','yellow','red'], extend='max', transform=proj, alpha=0.5)
+
 # 気圧 H
 maxid = detect_peaks(dsp['mslp'].values, filter_size=30, dist_cut=8.0)
 for j in range(len(maxid[0])):                                                      
