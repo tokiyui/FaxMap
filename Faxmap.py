@@ -301,7 +301,7 @@ dsp['ttd'] = dsp['temperature'] - dsp['dewpoint_temperature']
 # 相当温位
 dsp['Equivalent_Potential_temperature'] = mpcalc.equivalent_potential_temperature(dsp['level'],dsp['temperature'],dsp['dewpoint_temperature'])
 
-dsp['NewIndex'] = 2 * (dsp['temperature'][np.where(levels == 850)[0][0],:,:] - dsp['temperature'][np.where(levels == 500)[0][0],:,:]) - dsp['ttd'][np.where(levels == 850)[0][0],:,:] - dsp['temperature'][np.where(levels == 700)[0][0],:,:] 
+dsp['NewIndex'] = 2 * (dsp['temperature'][np.where(levels == 850)[0][0],:,:] - dsp['temperature'][np.where(levels == 500)[0][0],:,:]) - dsp['ttd'][np.where(levels == 850)[0][0],:,:] - dsp['ttd'][np.where(levels == 700)[0][0],:,:] 
 
 dsp['Geopotential_height'].data = ndimage.gaussian_filter(dsp['Geopotential_height'].data, sigma=(0, 4, 4))
 dsp['temperature'].data = ndimage.gaussian_filter(dsp['temperature'].data, sigma=(0, 6, 6))
