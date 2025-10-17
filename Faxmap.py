@@ -116,27 +116,39 @@ def detect_peaks(image, filter_size, dist_cut, flag=0):
     return peaks_index
         
 # 高層気象観測データ取得
-def fetch_wyoming_data(wmo, dt, tagHp):
+
+def fetch_wyoming_data_all(wmo, dt):
     url = (
         f"https://weather.uwyo.edu/wsgi/sounding?datetime={dt.year}-{dt.month:02d}-{dt.day:02d}%20{dt.hour:d}:00:00&id={wmo}&type=TEXT:LIST"
     )
-    res = requests.get(url)
-    if "Can't" in res.text or "Can't get" in res.text:
+    res = requests.get(url, timeout=60)
+
+    if res.status_code != 200 or "Can't" in res.text or "Can't get" in res.text:
         return None
- 
+
     lines = res.text.splitlines()
     data_started = False
+    data = {}
+
     for line in lines:
         if "PRES" in line and "TEMP" in line:
             data_started = True
             continue
-        if data_started and re.match(fr'^\s*{tagHp}', line):
+        if data_started:
             cols = line.split()
-            temp = float(cols[2])
-            ttd = float(cols[2]) - float(cols[3])
-            u_wind = -math.sin(math.radians(float(cols[6]))) * float(cols[7])
-            v_wind = -math.cos(math.radians(float(cols[6]))) * float(cols[7])
-            return temp, ttd, u_wind, v_wind
+            if len(cols) < 8:
+                continue
+            try:
+                pres = int(float(cols[0]))
+                temp = float(cols[2])
+                ttd = float(cols[2]) - float(cols[3])
+                u_wind = -math.sin(math.radians(float(cols[6]))) * float(cols[7])
+                v_wind = -math.cos(math.radians(float(cols[6]))) * float(cols[7])
+                data[pres] = (temp, ttd, u_wind, v_wind)
+            except ValueError:
+                continue
+
+    return data  # {pressure: (temp, ttd, u, v)} 形式で返す
  
 # 現在のUTC時刻を取得
 now_utc = datetime.datetime.now(datetime.UTC)
@@ -319,17 +331,19 @@ colspecs = [
     (12, 20),   # lat
     (21, 30),   # lon
     (31, 36),   # elev
-    (36, 100),  # name
+    (36, 72),   # name
+    (77, 81)    # year
 ]
-names = ['station_id', 'lat', 'lon', 'elev', 'name']
+names = ['station_id', 'lat', 'lon', 'elev', 'name', 'year']
 df = pd.read_fwf(StringIO(res.text), colspecs=colspecs, names=names)
  
 df['lat'] = pd.to_numeric(df['lat'], errors='coerce')
 df['lon'] = pd.to_numeric(df['lon'], errors='coerce')
 df['elev'] = pd.to_numeric(df['elev'], errors='coerce')
 df['wmo'] = pd.to_numeric(df['station_id'].astype(str).str[-5:], errors='coerce')
+df['year'] = pd.to_numeric(df['year'], errors='coerce')
 
-df_sel = df[(df['lon'] >= i_area[0]) & (df['lon'] <= i_area[1]) & (df['lat'] >= i_area[2]) & (df['lat'] <= i_area[3]) & (df['wmo'].notnull())]
+df_sel = df[(df['lon'] >= i_area[0]) & (df['lon'] <= i_area[1]) & (df['lat'] >= i_area[2]) & (df['lat'] <= i_area[3]) & (df['wmo'].notnull()) & (df['year'] > 2024)]
                              
 ## 年月日                                                                                                    
 dt_str = (vt.strftime("%Y%m%d%HUTC")).upper()
@@ -454,25 +468,41 @@ plt.savefig(out_path)
 print("output:{}".format(output_fig_nm))
 plt.show()
 
-for tagHp in [300,400,500,700,850,925]:
-    lons, lats, temps, ttds, u_winds, v_winds = [], [], [], [], [], []
- 
-    for _, row in df_sel.iterrows():
-        wmo_code = str(int(row['wmo'])).zfill(5)
-        lat = row['lat']
-        lon = row['lon']
+# 一度にfetchして保存
+all_data = {}
+for _, row in df_sel.iterrows():
+    wmo_code = str(int(row['wmo'])).zfill(5)
+    lat = row['lat']
+    lon = row['lon']
 
-        try:
-            temp, ttd, u, v = fetch_wyoming_data(wmo_code, vt, tagHp)
-            lons.append(lon)
-            lats.append(lat)
+    try:
+        data = fetch_wyoming_data_all(wmo_code, vt)
+        print(data)
+        if data:
+            all_data[wmo_code] = {
+                "lon": lon,
+                "lat": lat,
+                "data": data
+            }
+        time.sleep(3)
+    except Exception as e:
+        print(f"Error: {wmo_code} {e}")
+        continue
+
+# 各等圧面ごとに抽出
+for tagHp in [300, 400, 500, 700, 850, 925]:
+    lons, lats, temps, ttds, u_winds, v_winds = [], [], [], [], [], []
+
+    for wmo, info in all_data.items():
+        layer = info["data"].get(tagHp)
+        if layer:
+            temp, ttd, u, v = layer
+            lons.append(info["lon"])
+            lats.append(info["lat"])
             temps.append(temp)
             ttds.append(ttd)
             u_winds.append(u)
             v_winds.append(v)
-            time.sleep(0.5)
-        except:
-            continue
  
     ## 図のSIZE指定inch
     fig = plt.figure(figsize=(10,8))
