@@ -441,8 +441,8 @@ for area in [0, 1, 2, 3]:
                 ax.text(fig_z[0]-0.025, fig_z[1]-0.003,'{:5.1f}'.format(dp_temp),size=char_size, color=green, transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")  
 
     # RBF補間器を作成（multiquadricが一般的、smoothでなめらかさ調整）
-    rbf_temp = Rbf(lon_list_t, lat_list_t, temp_list, function='thin_plate', smooth=0.00001)
-    rbf_npre = Rbf(lon_list_p, lat_list_p, npre_list, function='thin_plate', smooth=0.00001)
+    rbf_temp = Rbf(lon_list_t, lat_list_t, temp_list, function='thin_plate', smooth=0.0001)
+    rbf_npre = Rbf(lon_list_p, lat_list_p, npre_list, function='thin_plate', smooth=0.0001)
 
     # グリッド上に評価
     grid_temp = rbf_temp(grid_lon_s, grid_lat_s)
