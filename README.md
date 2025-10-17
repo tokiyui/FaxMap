@@ -1,7 +1,6 @@
 # AmedasPlot
-![最新](latest/latestEast.png)
-
-関東〜近畿のレーダー・アメダスプロット図を表示しています。他の地域は https://tokiyui.github.io/AmedasPlot/ からご確認いただけます。
+他の地域は https://tokiyui.github.io/FaxMap/ からご確認いただけます。
+レーダー・アメダスプロット図は https://tokiyui.github.io/FaxMap/loacl.htmlからご確認いただけます。
 
 ## 注意！
 * ここで表示している図は、00から40分頃：一つ前の正時、40分過ぎから59分：直近の正時の画像ですが、エラーなどによって更新が止まることがあります。
