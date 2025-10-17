@@ -1,5 +1,7 @@
 # AmedasPlot
-カラー高層実況天気図を https://tokiyui.github.io/FaxMap/ に表示しています。また局地天気図は https://tokiyui.github.io/FaxMap/local.html からご確認いただけます。ご要望がありましたら、Twitterアカウント @cho_tokisen までご連絡いただければ、可能な範囲で対応いたします。
+* [カラー高層実況天気図](https://tokiyui.github.io/FaxMap/) を表示しています。  
+* [局地天気図](https://tokiyui.github.io/FaxMap/local.html) はここからご確認いただけます。
+* ご要望がありましたら、Twitterアカウント @cho_tokisen までご連絡いただければ、可能な範囲で対応いたします。
 
 ## 注意！
 * ここで表示している図は、00から20分頃：一つ前の正時、20分過ぎから59分：直近の正時の画像ですが、エラーなどによって更新が止まることがあります。
