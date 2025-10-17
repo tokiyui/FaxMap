@@ -341,13 +341,6 @@ for area in [0, 1, 2, 3]:
 
     # カラーマップの作成
     norm = BoundaryNorm(clevs, len(clevs) - 1)
-    
-    # グリッド線を引く                                                               
-    xticks=np.arange(-180,180,dlon)
-    yticks=np.arange(-90,90.1,dlat)
-    gl = ax.gridlines(crs=ccrs.PlateCarree(), draw_labels=False, linewidth=1, alpha=0.8)
-    gl.xlocator = mticker.FixedLocator(xticks)
-    gl.ylocator = mticker.FixedLocator(yticks)
 
     # 配列の宣言
     lat_list_t = []
@@ -514,7 +507,7 @@ for area in [0, 1, 2, 3]:
             ax.text(fig_z[0], fig_z[1] - 0.025, str(ival), size=24, color="red", transform=ax.transAxes, verticalalignment="top", horizontalalignment="center")
 
     # 海岸線
-    ax.coastlines(resolution='10m', linewidth=1.6, color='black')  
+    ax.coastlines(resolution='10m', linewidth=1.6, color='black', alpha=0.8)  
             
     # 図の説明
     plt.title('{}'.format("AMeDAS, RA1h, LIDEN1h"), loc='left',size=15)
