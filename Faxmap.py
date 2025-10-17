@@ -477,7 +477,6 @@ for _, row in df_sel.iterrows():
 
     try:
         data = fetch_wyoming_data_all(wmo_code, vt)
-        print(data)
         if data:
             all_data[wmo_code] = {
                 "lon": lon,
