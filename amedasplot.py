@@ -519,5 +519,5 @@ for area in [0, 1, 2, 3]:
     # 図の説明
     plt.title('{}'.format("AMeDAS, RA1h, LIDEN1h"), loc='left',size=15)
     plt.title('{}'.format(time.strftime("%Y-%m-%d %HJST")), loc='right',size=15);
-    plt.savefig("latest{}.png".format(areaname), format="png")
+    plt.savefig("Data/latest{}.png".format(areaname), format="png")
     plt.clf()
