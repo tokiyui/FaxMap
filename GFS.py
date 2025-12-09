@@ -119,10 +119,9 @@ def detect_peaks(image, filter_size, dist_cut, flag=0):
 now_utc = datetime.datetime.now(datetime.UTC)
  
 # 8時間引く
-adjusted_time = now_utc - datetime.timedelta(hours=12) - datetime.timedelta(minutes=80)
- 
+adjusted_time = now_utc - datetime.timedelta(hours=5)
 # 6時間単位で切り捨て
-truncated_hour = (adjusted_time.hour // 12) * 12
+truncated_hour = (adjusted_time.hour // 6) * 6
 dt = adjusted_time.replace(hour=truncated_hour, minute=0, second=0, microsecond=0)
 
 # 個別に取り出したい場合
@@ -342,14 +341,14 @@ for ft in fts:
     ax.barbs(dsp['lon'][wind_slice[0]], dsp['lat'][wind_slice[1]], dsp['u_wind'][np.where(levels == 850)[0][0],wind_slice[0],wind_slice[1]].values, dsp['v_wind'][np.where(levels == 850)[0][0],wind_slice[0],wind_slice[1]].values, length=5.5, pivot='middle', color='black', transform=proj)
    
     ## 図の説明
-    fig3.text(0.5, 0.01, dt_str + " FT={0} 850hPa EPT(K), Wind".format(ft) ,ha='center',va='bottom', size=20)
+    fig3.text(0.5, 0.01, "GFS " + dt_str + " FT={0} 850hPa EPT(K), Wind".format(ft) ,ha='center',va='bottom', size=20)
 
     # 出力先ディレクトリを作成
     output_dir = os.path.join("Data/", dt_str)
     os.makedirs(output_dir, exist_ok=True)  # 再帰的に作成、すでにあってもOK
 
     ## file出力
-    output_fig_nm="{0}_{1:03d}_850ept.png".format(dt_str,ft)
+    output_fig_nm="GFS{0}_{1:03d}_850ept.png".format(dt_str,ft)
     out_path = os.path.join(output_dir, output_fig_nm)
     plt.savefig(out_path)
     print("output:{}".format(output_fig_nm))
@@ -411,14 +410,14 @@ for ft in fts:
     gl.ylocator = mticker.FixedLocator(yticks)
    
     ## 図の説明
-    fig3.text(0.5, 0.01, dt_str + " FT={0} Sea Level Pressure(hPa)".format(ft) ,ha='center',va='bottom', size=20)
+    fig3.text(0.5, 0.01, "GFS " + dt_str + " FT={0} Sea Level Pressure(hPa)".format(ft) ,ha='center',va='bottom', size=20)
 
     # 出力先ディレクトリを作成
     output_dir = os.path.join("Data/", dt_str)
     os.makedirs(output_dir, exist_ok=True)  # 再帰的に作成、すでにあってもOK
 
     ## file出力
-    output_fig_nm="{0}_{1:03d}_surf.png".format(dt_str,ft)
+    output_fig_nm="GFS{0}_{1:03d}_surf.png".format(dt_str,ft)
     out_path = os.path.join(output_dir, output_fig_nm)
     plt.savefig(out_path)
     print("output:{}".format(output_fig_nm))
@@ -538,10 +537,10 @@ for ft in fts:
         gl.ylocator = mticker.FixedLocator(yticks)
 
         ## 図の説明
-        fig.text(0.5, 0.01, dt_str + " FT={0} {1}hPa Tmp, T-Td".format(ft,int(tagHp)), ha='center',va='bottom', size=20)
+        fig.text(0.5, 0.01, "GFS " + dt_str + " FT={0} {1}hPa Tmp, T-Td".format(ft,int(tagHp)), ha='center',va='bottom', size=20)
  
         ## 出力
-        out_fn="{0}_{1:03d}_{2:03d}ttd.png".format(dt_str,ft,tagHp)
+        out_fn="GFS{0}_{1:03d}_{2:03d}ttd.png".format(dt_str,ft,tagHp)
         out_path = os.path.join(output_dir, out_fn)
         plt.savefig(out_path)
         print("output:{}".format(out_fn))
