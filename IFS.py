@@ -119,10 +119,10 @@ def detect_peaks(image, filter_size, dist_cut, flag=0):
 now_utc = datetime.datetime.now(datetime.UTC)
  
 # 8時間引く
-adjusted_time = now_utc - datetime.timedelta(hours=12) - datetime.timedelta(minutes=80)
+adjusted_time = now_utc - datetime.timedelta(hours=9)
  
 # 6時間単位で切り捨て
-truncated_hour = (adjusted_time.hour // 12) * 12
+truncated_hour = (adjusted_time.hour // 6) * 6
 dt = adjusted_time.replace(hour=truncated_hour, minute=0, second=0, microsecond=0)
 
 # 個別に取り出したい場合
@@ -212,7 +212,7 @@ for ft in fts:
     valSlp, _, _ = grbs.select(name='Mean sea level pressure')[0].data(lat1=latS,lat2=latN,lon1=lonW,lon2=lonE)
 
     aryTp = np.zeros([lat_size, lon_size])
-    valTp, _, _ = grbs.select(name='Total precipitation')[0].data(lat1=latS,lat2=latN,lon1=lonW,lon2=lonE)
+    valTp, _, _ = grbs.select(name='Precipitation rate')[0].data(lat1=latS,lat2=latN,lon1=lonW,lon2=lonE)
 
 
     # 要素毎に3次元配列作成
@@ -247,7 +247,7 @@ for ft in fts:
             "v_wind": (["level", "lat", "lon"], aryWv * units('m/s')),
             "omega": (["level", "lat", "lon"], aryOmg / 100 * 3600 * units('Pa/s')), # Pa/s => hPa/h
             "mslp": (["lat", "lon"], arySlp / 100 * units('hPa')),
-            "precipitation": (["lat", "lon"], aryTp * 1000 * units('mm/h'))
+            "precipitation": (["lat", "lon"], aryTp * 3600 * units('mm/h'))
         },
         coords={
             "level": levels,
@@ -301,12 +301,6 @@ for ft in fts:
     dsp['ttd'].data = ndimage.gaussian_filter(dsp['ttd'].data, sigma=(0, 2, 2))
     dsp['Equivalent_Potential_temperature'].data = ndimage.gaussian_filter(dsp['Equivalent_Potential_temperature'].data, sigma=(0, 2, 2))
     dsp['mslp'].data = ndimage.gaussian_filter(dsp['mslp'].data, sigma=(6, 6))
-    print(ft)
-    if ft > 3:
-        dsp['r3'] = dsp['precipitation'] - precip
-    else:
-        dsp['r3'] = dsp['precipitation']
-    precip = dsp['precipitation'].copy()
                              
     ## 年月日                                                                                                    
     dt_str = (dt.strftime("%Y%m%d%HUTC")).upper()
@@ -353,14 +347,14 @@ for ft in fts:
     ax.barbs(dsp['lon'][wind_slice[0]], dsp['lat'][wind_slice[1]], dsp['u_wind'][np.where(levels == 850)[0][0],wind_slice[0],wind_slice[1]].values, dsp['v_wind'][np.where(levels == 850)[0][0],wind_slice[0],wind_slice[1]].values, length=5.5, pivot='middle', color='black', transform=proj)
    
     ## 図の説明
-    fig3.text(0.5, 0.01, dt_str + " FT={0} 850hPa EPT(K), Wind".format(ft) ,ha='center',va='bottom', size=20)
+    fig3.text(0.5, 0.01, "IFS " + dt_str + " FT={0} 850hPa EPT(K), Wind".format(ft) ,ha='center',va='bottom', size=20)
 
     # 出力先ディレクトリを作成
     output_dir = os.path.join("Data/", dt_str)
     os.makedirs(output_dir, exist_ok=True)  # 再帰的に作成、すでにあってもOK
 
     ## file出力
-    output_fig_nm="{0}_{1:03d}_850ept.png".format(dt_str,ft)
+    output_fig_nm="IFS{0}_{1:03d}_850ept.png".format(dt_str,ft)
     out_path = os.path.join(output_dir, output_fig_nm)
     plt.savefig(out_path)
     print("output:{}".format(output_fig_nm))
@@ -381,7 +375,7 @@ for ft in fts:
     ax.contour(dsp['lon'], dsp['lat'], dsp['mslp'], clevs_mslp, colors='black', linestyles='solid', linewidths=[1.25, 0.75, 0.75, 0.75, 0.75], transform=proj)
 
     # 降水量
-    ax.contourf(dsp['lon'], dsp['lat'], dsp['r3'].values, rainlevels, colors=jmacolors, extend='max', transform=proj, alpha=0.5)
+    ax.contourf(dsp['lon'], dsp['lat'], dsp['precipitation'].values, rainlevels, colors=jmacolors, extend='max', transform=proj, alpha=0.5)
 
     # 気圧 H
     maxid = detect_peaks(dsp['mslp'].values, filter_size=30, dist_cut=8.0)
@@ -422,14 +416,14 @@ for ft in fts:
     gl.ylocator = mticker.FixedLocator(yticks)
    
     ## 図の説明
-    fig3.text(0.5, 0.01, dt_str + " FT={0} Sea Level Pressure(hPa)".format(ft) ,ha='center',va='bottom', size=20)
+    fig3.text(0.5, 0.01, "IFS " + dt_str + " FT={0} Sea Level Pressure(hPa)".format(ft) ,ha='center',va='bottom', size=20)
 
     # 出力先ディレクトリを作成
     output_dir = os.path.join("Data/", dt_str)
     os.makedirs(output_dir, exist_ok=True)  # 再帰的に作成、すでにあってもOK
 
     ## file出力
-    output_fig_nm="{0}_{1:03d}_surf.png".format(dt_str,ft)
+    output_fig_nm="IFS{0}_{1:03d}_surf.png".format(dt_str,ft)
     out_path = os.path.join(output_dir, output_fig_nm)
     plt.savefig(out_path)
     print("output:{}".format(output_fig_nm))
@@ -549,10 +543,10 @@ for ft in fts:
         gl.ylocator = mticker.FixedLocator(yticks)
 
         ## 図の説明
-        fig.text(0.5, 0.01, dt_str + " FT={0} {1}hPa Tmp, T-Td".format(ft,int(tagHp)), ha='center',va='bottom', size=20)
+        fig.text(0.5, 0.01, "IFS " + dt_str + " FT={0} {1}hPa Tmp, T-Td".format(ft,int(tagHp)), ha='center',va='bottom', size=20)
  
         ## 出力
-        out_fn="{0}_{1:03d}_{2:03d}ttd.png".format(dt_str,ft,tagHp)
+        out_fn="IFS{0}_{1:03d}_{2:03d}ttd.png".format(dt_str,ft,tagHp)
         out_path = os.path.join(output_dir, out_fn)
         plt.savefig(out_path)
         print("output:{}".format(out_fn))
