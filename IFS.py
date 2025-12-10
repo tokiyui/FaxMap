@@ -214,7 +214,8 @@ for ft in fts:
     aryTp = np.zeros([lat_size, lon_size])
     valTp, _, _ = grbs.select(name='Precipitation rate')[0].data(lat1=latS,lat2=latN,lon1=lonW,lon2=lonE)
 
-
+    grbs.close()
+     
     # 要素毎に3次元配列作成
     for l in range(l_size):
         valHt, _, _ = grbHt[l].data(lat1=latS,lat2=latN,lon1=lonW,lon2=lonE)
