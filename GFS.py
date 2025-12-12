@@ -209,6 +209,10 @@ for ft in fts:
     valTp, _, _ = grbs.select(name='Precipitation rate')[0].data(lat1=latS,lat2=latN,lon1=lonW,lon2=lonE)
 
     grbs.close()
+
+    # ダウンロードした GRIB を削除
+    if os.path.exists(fname_gfs):
+        os.remove(fname_gfs)
     
     # 要素毎に3次元配列作成
     for l in range(l_size):
