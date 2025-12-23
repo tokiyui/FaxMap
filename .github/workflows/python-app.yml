@@ -25,7 +25,7 @@ jobs:
 
       - name: Run plotting scripts
         run: |
-          python Faxmap.py
+          python faxmap.py
           python emagram.py
 
       - name: Commit and push PNG images
