@@ -151,7 +151,7 @@ const suffixes = [
 const grid = document.getElementById("imageGrid");
 suffixes.forEach(s=>{
   const img = document.createElement("img");
-  img.src = `https://media.githubusercontent.com/media/tokiyui/FaxMap/main/Data/${latestTime}UTC/${latestTime}UTC${s}`;
+  img.src = `./Data/${latestTime}UTC/${latestTime}UTC${s}`;
   grid.appendChild(img);
 });
 
@@ -177,7 +177,7 @@ async function updateAll() {
   const stn = stationSelect.value;
 
   /* ---- エマグラム ---- */
-  emagramImg.src = `https://media.githubusercontent.com/media/tokiyui/FaxMap/main/Data/${latestTime}UTC/${stn}_${latestTime}.png`;
+  emagramImg.src = `./Data/${latestTime}UTC/${stn}_${latestTime}.png`;
 
   /* ---- 高層気温 ---- */
   const yyyyN = yyyy, mmN = parseInt(MM), ddN = parseInt(dd), hhN = parseInt(HH);
