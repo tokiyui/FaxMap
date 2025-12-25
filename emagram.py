@@ -16,7 +16,7 @@ stations = {
     '47412': 'Sapporo',
     '47418': 'Kushiro',
     '47582': 'Akita',
-    #'47600': 'Wajima',
+    '47600': 'Wajima',
     '47646': 'Tateno',
     '47678': 'Hachijojima',
     '47741': 'Matsue',
