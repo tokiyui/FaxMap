@@ -75,6 +75,13 @@ def plot_sounding(station_id, station_name, dt):
     except IndexError:
         T500 = np.nan * units.degC
 
+    # 850hPa 気温
+    try:
+        idx_850 = np.where(p.m >= 850)[0][-1]
+        T850 = T[idx_850]
+    except IndexError:
+        T850 = np.nan * units.degC
+      
     fig, ax = plt.subplots(figsize=(8, 10))
 
     ax.plot(theta, p, color='red', label='θ')
@@ -87,7 +94,7 @@ def plot_sounding(station_id, station_name, dt):
         ax.axhline(el_p.m, color='purple', linestyle='--', label=f'EL: {el_height_m:.0f} m')
 
     title_center = f"{dt.strftime('%Y-%m-%d %H:%M UTC')} - {station_name} ({station_id})"
-    index_info = f"SSI: {ssi[0].magnitude:.1f}   K-Index: {k.magnitude:.1f}   Total Totals: {tt.magnitude:.1f}   500hPa T: {T500.magnitude:.1f} °C"
+    index_info = f"SSI: {ssi[0].magnitude:.1f}   K-Index: {k.magnitude:.1f}   Total Totals: {tt.magnitude:.1f}   500hPa T: {T500.magnitude:.1f} °C   850hPa T: {T850.magnitude:.1f} °C"
     fig.suptitle(title_center, x=0.5, y=0.98, ha='center', fontsize=16)
     fig.text(0.5, 0.955, index_info, ha='center', va='top', fontsize=12)
 
